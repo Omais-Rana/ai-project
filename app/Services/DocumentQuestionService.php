@@ -110,10 +110,10 @@ class DocumentQuestionService
             );
         }
 
-        // Build context and generate answer
+        // Build context and generate answer (no conversation context for cross-document queries)
         $context = $this->buildContext($searchResults);
         $citations = $this->extractCitations($searchResults);
-        $prompt = $this->buildPrompt($question, $context);
+        $prompt = $this->buildPromptWithContext($question, $context, []); // Empty conversation context
 
         try {
             // Use Laravel AI Agent
