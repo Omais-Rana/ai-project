@@ -41,7 +41,6 @@ class DocumentQuestionController extends Controller
                     'conversation_id' => $questionRecord->conversation_id,
                 ],
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -77,7 +76,6 @@ class DocumentQuestionController extends Controller
                     'conversation_id' => $questionRecord->conversation_id,
                 ],
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -102,14 +100,14 @@ class DocumentQuestionController extends Controller
 
     public function documentHistory(Request $request, Document $document)
     {
-        // Get conversation history for specific document
+        // Get conversation history for specific document (chronological order)
         $questions = DocumentQuestion::where('document_id', $document->id)
-            ->latest()
+            ->oldest() // Changed from latest() to oldest() for chronological order
             ->get();
 
         return response()->json([
             'success' => true,
-            'data' => $questions->map(function($question) {
+            'data' => $questions->map(function ($question) {
                 return [
                     'id' => $question->id,
                     'question' => $question->question,

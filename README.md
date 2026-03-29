@@ -11,7 +11,6 @@ Built with **Laravel 13**, **Tailwind CSS**, **Alpine.js**, and the **TALL stack
 - **Vector Embeddings**: Uses Mistral AI to generate embeddings for semantic search
 - **RAG Pipeline**: Retrieves relevant chunks and generates grounded answers
 - **Chat Interface**: Interactive Q&A with real-time responses
-- **Citations**: Every answer includes source references with page numbers
 - **Confidence Scores**: Visual indicators showing answer confidence level
 - **Multi-turn Conversations**: Maintains context across multiple questions
 - **Document Management**: Upload, view, and delete documents

@@ -18,7 +18,7 @@ class DocumentQuestionService
     }
 
     /**
-     * Ask a question about a specific document
+     * Ask a question about a specific document with conversation context
      */
     public function askQuestion(
         Document $document,
@@ -26,8 +26,14 @@ class DocumentQuestionService
         ?int $userId = null,
         ?string $conversationId = null
     ): DocumentQuestion {
-        // Search for relevant chunks
-        $searchResults = $this->vectorSearchService->searchDocument($document, $question);
+        // Get conversation context for better search
+        $conversationContext = $this->getConversationContext($document, $conversationId);
+        
+        // Expand query with conversation context
+        $expandedQuery = $this->expandQueryWithContext($question, $conversationContext);
+        
+        // Search for relevant chunks using expanded query
+        $searchResults = $this->vectorSearchService->searchDocument($document, $expandedQuery);
 
         if (empty($searchResults)) {
             return $this->createQuestionRecord(
@@ -43,20 +49,20 @@ class DocumentQuestionService
             );
         }
 
-        // Build context from retrieved chunks
-        $context = $this->buildContext($searchResults);
+        // Build context from retrieved chunks + conversation context
+        $context = $this->buildContextWithHistory($searchResults, $conversationContext);
         $citations = $this->extractCitations($searchResults);
 
         // Generate answer using Mistral via agent
-        $prompt = $this->buildPrompt($question, $context);
-        
+        $prompt = $this->buildPromptWithContext($question, $context, $conversationContext);
+
         try {
             // Use Laravel AI Agent
             $agent = new \App\Agents\DocumentQuestionAgent($this->model);
             $response = $agent->prompt($prompt);
-            
+
             $answer = (string) $response;
-            
+
             // Skip token tracking - Laravel AI SDK response structure unknown
             $tokensUsed = 0;
 
@@ -74,7 +80,6 @@ class DocumentQuestionService
                 $userId,
                 $conversationId
             );
-
         } catch (\Exception $e) {
             throw new \Exception("Failed to generate answer: " . $e->getMessage());
         }
@@ -114,9 +119,9 @@ class DocumentQuestionService
             // Use Laravel AI Agent
             $agent = new \App\Agents\DocumentQuestionAgent($this->model);
             $response = $agent->prompt($prompt);
-            
+
             $answer = (string) $response;
-            
+
             // Try to get tokens used - handle different response structures
             $tokensUsed = 0;
             try {
@@ -134,7 +139,7 @@ class DocumentQuestionService
                 // Fallback: couldn't get token count, that's okay
                 $tokensUsed = 0;
             }
-            
+
             $confidence = $this->calculateConfidence($searchResults);
 
             // Use the document from the highest-ranked chunk
@@ -151,7 +156,6 @@ class DocumentQuestionService
                 null, // No user_id
                 $conversationId
             );
-
         } catch (\Exception $e) {
             throw new \Exception("Failed to generate answer: " . $e->getMessage());
         }
@@ -195,16 +199,83 @@ class DocumentQuestionService
         return $citations;
     }
 
-    protected function buildPrompt(string $question, string $context): string
+    protected function buildPromptWithContext(string $question, string $context, array $conversationContext): string
     {
+        $conversationHistory = '';
+        if (!empty($conversationContext)) {
+            $conversationHistory = "\nRecent conversation:\n";
+            foreach (array_slice($conversationContext, -3) as $qa) { // Last 3 Q&As
+                $conversationHistory .= "Q: {$qa['question']}\nA: {$qa['answer']}\n\n";
+            }
+        }
+
         return <<<PROMPT
 Context from documents:
 {$context}
-
+{$conversationHistory}
 Question: {$question}
 
-Answer the question above using ONLY the context provided. Be concise. If the answer is not in the context, state that clearly.
+Instructions:
+- Answer using ONLY the document context provided above
+- Consider the conversation history to understand context and references (like "those", "them", "it")
+- For questions about conversation history (like "What was my first question?"), respond: "I can only answer questions about the document content, not conversation history"
+- Be concise and direct
+- If the answer is not in the document context, state that clearly
+
+Answer:
 PROMPT;
+    }
+
+    protected function getConversationContext(Document $document, ?string $conversationId): array
+    {
+        if (!$conversationId) {
+            return [];
+        }
+
+        // Get recent questions from the same conversation (last 5)
+        return DocumentQuestion::where('document_id', $document->id)
+            ->where('conversation_id', $conversationId)
+            ->latest()
+            ->limit(5)
+            ->get()
+            ->map(fn($q) => [
+                'question' => $q->question,
+                'answer' => $q->answer,
+                'created_at' => $q->created_at
+            ])
+            ->reverse() // Chronological order
+            ->values()
+            ->toArray();
+    }
+
+    protected function expandQueryWithContext(string $question, array $conversationContext): string
+    {
+        // If question contains pronouns/references and we have context, expand it
+        $pronouns = ['those', 'them', 'it', 'they', 'that', 'this', 'these'];
+        $hasPronouns = false;
+        
+        foreach ($pronouns as $pronoun) {
+            if (stripos($question, $pronoun) !== false) {
+                $hasPronouns = true;
+                break;
+            }
+        }
+
+        if ($hasPronouns && !empty($conversationContext)) {
+            // Get the last question for context
+            $lastQA = end($conversationContext);
+            if ($lastQA && strlen($lastQA['question']) > 0) {
+                // Combine current question with last question context
+                return $lastQA['question'] . ' ' . $question;
+            }
+        }
+
+        return $question;
+    }
+
+    protected function buildContextWithHistory(array $searchResults, array $conversationContext): string
+    {
+        return $this->buildContext($searchResults); // Use existing method for now
     }
 
     protected function calculateConfidence(array $searchResults): float

@@ -61,8 +61,8 @@
                             <div class="text-sm font-medium mb-1" x-text="message.role === 'user' ? 'You' : 'Assistant'"></div>
                             <div class="text-sm" x-html="formatMarkdown(message.content)"></div>
                             
-                            <!-- Citations -->
-                            <template x-if="message.citations && message.citations.length > 0">
+                            <!-- Citations (only show if answer is document-related) -->
+                            <template x-if="message.citations && message.citations.length > 0 && !isNonDocumentAnswer(message.content)">
                                 <div class="mt-3 pt-3 border-t border-gray-200">
                                     <div class="text-xs font-medium mb-2">Sources:</div>
                                     <template x-for="citation in message.citations" :key="citation.chunk_id">
@@ -75,8 +75,8 @@
                                 </div>
                             </template>
 
-                            <!-- Confidence Badge -->
-                            <template x-if="message.confidence_percentage">
+                            <!-- Confidence Badge (only show if answer is document-related) -->
+                            <template x-if="message.confidence_percentage && !isNonDocumentAnswer(message.content)">
                                 <div class="mt-2">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
                                           :class="message.is_high_confidence ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'">
@@ -263,6 +263,21 @@
                         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                         .replace(/\*(.*?)\*/g, '<em>$1</em>')
                         .replace(/\n/g, '<br>');
+                },
+
+                isNonDocumentAnswer(content) {
+                    // Check if answer indicates it's not document-related
+                    const nonDocumentPhrases = [
+                        'I can only answer questions about the document content',
+                        'This information is not in the provided documents',
+                        'I focus on document content only',
+                        'not conversation history',
+                        'not conversation context'
+                    ];
+                    
+                    return nonDocumentPhrases.some(phrase => 
+                        content.toLowerCase().includes(phrase.toLowerCase())
+                    );
                 },
 
                 scrollToBottom() {
