@@ -123,9 +123,9 @@ MAX_UPLOAD_SIZE=10240  # 10MB in KB
 ### 3. Database Setup
 
 ```bash
-# Create database (MySQL)
+# Create database (MySQL) or use the ai.sql file given in the database folder and import it
 mysql -u root -p
-CREATE DATABASE ai_homework_helper;
+CREATE DATABASE ai;
 exit
 
 # Run migrations to create all tables
