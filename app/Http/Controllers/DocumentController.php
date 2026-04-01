@@ -16,7 +16,10 @@ class DocumentController extends Controller
     public function __construct(
         protected DocumentProcessorService $processorService,
         protected VectorSearchService $vectorSearchService
-    ) {}
+    ) {
+        // Increase execution time limit for document processing
+        set_time_limit(300); // 5 minutes
+    }
 
     public function index(Request $request)
     {
@@ -89,19 +92,26 @@ class DocumentController extends Controller
 
     public function destroy(Document $document)
     {
-        // Manually delete associated questions (in case cascade isn't working)
-        DocumentQuestion::where('document_id', $document->id)->delete();
+        // Delete all study materials first
+        $document->flashcards()->delete();
+        $document->quizzes()->delete(); 
+        $document->summaries()->delete();
         
+        // Delete associated questions (in case cascade isn't working)
+        DocumentQuestion::where('document_id', $document->id)->delete();
+
         // Delete chunks (should cascade automatically)
         DocumentChunk::where('document_id', $document->id)->delete();
-        
+
         // Delete file from storage
-        Storage::delete($document->file_path);
+        if ($document->file_path) {
+            Storage::delete($document->file_path);
+        }
 
         // Delete document
         $document->delete();
 
-        return back()->with('success', 'Document and all associated data deleted successfully!');
+        return redirect()->route('documents.index')->with('success', 'Document and all associated data deleted successfully!');
     }
 
     public function chat(Document $document)

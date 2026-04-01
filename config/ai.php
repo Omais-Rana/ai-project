@@ -25,6 +25,10 @@ return [
     'chunk_size' => env('CHUNK_SIZE', 800),
     'chunk_overlap' => env('CHUNK_OVERLAP', 150),
     'top_k_chunks' => env('TOP_K_CHUNKS', 5),
+    
+    // API timeout settings (in seconds)
+    'api_timeout' => env('AI_API_TIMEOUT', 180), // 3 minutes default
+    'connection_timeout' => env('AI_CONNECTION_TIMEOUT', 30),
 
     /*
     |--------------------------------------------------------------------------
@@ -103,6 +107,7 @@ return [
         'mistral' => [
             'driver' => 'mistral',
             'key' => env('MISTRAL_API_KEY'),
+            'timeout' => env('MISTRAL_TIMEOUT', 180), // 3 minutes
         ],
 
         'ollama' => [

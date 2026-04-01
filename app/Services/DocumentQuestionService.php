@@ -28,10 +28,10 @@ class DocumentQuestionService
     ): DocumentQuestion {
         // Get conversation context for better search
         $conversationContext = $this->getConversationContext($document, $conversationId);
-        
+
         // Expand query with conversation context
         $expandedQuery = $this->expandQueryWithContext($question, $conversationContext);
-        
+
         // Search for relevant chunks using expanded query
         $searchResults = $this->vectorSearchService->searchDocument($document, $expandedQuery);
 
@@ -253,7 +253,7 @@ PROMPT;
         // If question contains pronouns/references and we have context, expand it
         $pronouns = ['those', 'them', 'it', 'they', 'that', 'this', 'these'];
         $hasPronouns = false;
-        
+
         foreach ($pronouns as $pronoun) {
             if (stripos($question, $pronoun) !== false) {
                 $hasPronouns = true;

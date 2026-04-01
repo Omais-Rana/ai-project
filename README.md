@@ -1,296 +1,433 @@
-# 📚 Document Q&A Homework Helper
+# 📚 AI-Powered Homework Helper
 
-An AI-powered homework helper that allows students to upload documents (PDF, DOCX, TXT) and ask questions about their content using **Mistral AI** and **RAG (Retrieval Augmented Generation)**.
+An **intelligent academic assistant** that helps students upload documents (PDF, DOCX, TXT) and leverage **advanced AI study tools** powered by **Mistral AI** and **RAG (Retrieval Augmented Generation)**.
 
-Built with **Laravel 13**, **Tailwind CSS**, **Alpine.js**, and the **TALL stack** principles.
+Built with the **TALL stack**.
 
 ## ✨ Features
 
+### 🤖 Intelligent Document Q&A
+
 - **Document Upload**: Support for PDF, DOCX, and TXT files (up to 10MB)
-- **Intelligent Chunking**: Documents are split into overlapping chunks for better context
-- **Vector Embeddings**: Uses Mistral AI to generate embeddings for semantic search
-- **RAG Pipeline**: Retrieves relevant chunks and generates grounded answers
-- **Chat Interface**: Interactive Q&A with real-time responses
-- **Confidence Scores**: Visual indicators showing answer confidence level
-- **Multi-turn Conversations**: Maintains context across multiple questions
-- **Document Management**: Upload, view, and delete documents
+- **Smart Processing**: Documents are chunked for optimal AI analysis
+- **Vector Embeddings**: Uses Mistral AI for semantic search
+- **RAG Pipeline**: Retrieves relevant content and generates accurate answers
+- **Interactive Chat**: Real-time Q&A with conversation context
+- **Smart Citations**: Source attribution with confidence scores
 
-## 🚀 Installation
+### 📚 AI Study Tools
 
-### 1. Install Composer Dependencies
+#### 🃏 Flashcard Generator
 
-The system requires PDF and DOCX parsing libraries:
+- **Auto-Generation**: Creates 15-30 interactive flashcards from document content
+- **Difficulty Levels**: Easy, medium, and hard cards for progressive learning
+- **Interactive Interface**: 3D flip animations with keyboard navigation
+- **Export Options**:
+    - **Anki CSV**: Import directly into Anki for spaced repetition
+    - **JSON**: Compatible with other flashcard apps
+
+#### ✅ Quiz Generator
+
+- **Mixed Question Types**: Multiple choice, true/false, and fill-in-the-blank
+- **Smart Difficulty**: Balanced distribution across difficulty levels
+- **Instant Feedback**: Immediate answer checking with explanations
+- **10-15 Questions**: Optimal length for effective knowledge assessment
+
+#### 📝 Document Summarizer
+
+- **Three Summary Modes**:
+    - **TL;DR**: Ultra-brief 2-3 sentence overview
+    - **Brief**: Concise 1-2 paragraph summary (100-200 words)
+    - **Detailed**: Comprehensive 3-5 paragraph analysis (300-500 words)
+- **Context-Aware**: Preserves main ideas and key terminology
+- **Student-Friendly**: Clear, accessible language
+
+### 🎨 Modern User Experience
+
+- **Elegant Design**: Gradient-based modern interface
+- **Loading Indicators**: Visual feedback during file uploads and AI generation
+- **Responsive Layout**: Works perfectly on desktop and mobile
+- **Smooth Animations**: Professional transitions and hover effects
+
+## 🚀 Installation & Setup
+
+### Prerequisites
+
+- **PHP 8.1+** with extensions: `mbstring`, `fileinfo`, `pdo_mysql`
+- **Composer** (PHP package manager)
+- **Node.js & npm** (for frontend assets)
+- **MySQL** database
+- **Mistral AI API key** (sign up at [console.mistral.ai](https://console.mistral.ai))
+
+### 1. Clone and Install
 
 ```bash
-composer require smalot/pdfparser phpoffice/phpword
+# Clone the repository
+git clone <your-repo-url> ai-homework-helper
+cd ai-homework-helper
+
+# Install PHP dependencies
+composer install
+
+# Install Node.js dependencies
+npm install
 ```
 
-### 2. Configure Mistral AI
+### 2. Environment Configuration
 
-Your `.env` file should already have `MISTRAL_API_KEY` set. Add these additional settings:
+```bash
+# Copy environment file
+cp .env.example .env
+
+# Generate application key
+php artisan key:generate
+```
+
+Edit your `.env` file with the following settings:
 
 ```env
+# Application
+APP_NAME="AI Homework Helper"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+# Database Configuration
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ai_homework_helper
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+
 # Mistral AI Configuration
-MISTRAL_API_KEY=your_key_here
+MISTRAL_API_KEY=your_mistral_api_key_here
 MISTRAL_MODEL=mistral-large-latest
 MISTRAL_EMBEDDING_MODEL=mistral-embed
 
-# AI Configuration
+# AI Settings
 AI_DEFAULT_PROVIDER=mistral
 AI_EMBEDDING_PROVIDER=mistral
-CACHE_EMBEDDINGS=true
+AI_API_TIMEOUT=180
+MISTRAL_TIMEOUT=180
 
 # Document Processing
 CHUNK_SIZE=800
 CHUNK_OVERLAP=150
 TOP_K_CHUNKS=5
 
-# File Limits
-MAX_DOCUMENT_SIZE_MB=10
+# File Upload Limits
+MAX_UPLOAD_SIZE=10240  # 10MB in KB
 ```
 
-### 3. Run Migrations
-
-Migrations have already been run, but if you need to run them again:
+### 3. Database Setup
 
 ```bash
+# Create database (MySQL)
+mysql -u root -p
+CREATE DATABASE ai_homework_helper;
+exit
+
+# Run migrations to create all tables
 php artisan migrate
 ```
 
-### 4. Create Storage Link
+### 4. Storage Configuration
 
 ```bash
+# Create storage link for file uploads
 php artisan storage:link
+
+# Set proper permissions (Linux/Mac)
+chmod -R 775 storage bootstrap/cache
 ```
 
 ### 5. Build Frontend Assets
 
 ```bash
-npm install
+# For production
 npm run build
-```
 
-Or for development:
-
-```bash
+# OR for development (with watching)
 npm run dev
 ```
 
-### 6. Start the Development Server
+### 6. Start the Application
 
 ```bash
+# Development server
 php artisan serve
 ```
 
-Visit http://localhost:8000 (or your configured URL)
+Visit **http://localhost:8000** to access your AI homework helper!
 
-## 📖 Usage
+## 📖 How to Use
 
-### Uploading Documents
+### 1. Upload Documents
 
-1. Navigate to the home page
-2. Click "Upload New Document"
-3. Select a PDF, DOCX, or TXT file
-4. Wait for processing (automatic)
+1. Click **"Upload New Document"** on the homepage
+2. Select a PDF, DOCX, or TXT file (max 10MB)
+3. Wait for processing (typically 10-30 seconds)
+4. Document appears in your library when ready
 
-### Asking Questions
+### 2. Chat with Documents
 
-1. Click "Ask Questions" on any processed document
-2. Type your question in the chat interface
-3. Get instant answers with citations and confidence scores
+1. Click **"💬 Ask Questions"** on any processed document
+2. Type questions about the document content
+3. Get instant AI-powered answers with source citations
+4. Ask follow-up questions - the AI maintains conversation context
 
-### Understanding Results
+### 3. Generate Study Materials
 
-- **✓ Ready**: Document is processed and ready for questions
-- **⏳ Processing**: Document is being chunked and embedded
-- **✗ Failed**: Processing error (check error message)
+Click **"📚 Study Materials"** on any document to access:
 
-**Confidence Scores**:
+#### 🃏 Flashcards
 
-- **Green (75%+)**: High confidence - answer well-supported by document
-- **Yellow (<75%)**: Lower confidence - answer may be less certain
+- Click "Flashcards" → Auto-generates 15-30 cards
+- Use arrow keys or click to flip cards
+- Filter by difficulty level
+- Export to Anki or JSON format
 
-## 🏗️ Architecture
+#### ✅ Quiz
+
+- Click "Quiz" → Generates 10-15 mixed questions
+- Choose difficulty or use "Mixed" mode
+- Get instant feedback with explanations
+- Retake with different questions anytime
+
+#### 📝 Summary
+
+- Click "Summary" → Choose your preferred mode
+- **TL;DR**: Quick 2-3 sentence overview
+- **Brief**: Balanced 1-2 paragraph summary
+- **Detailed**: Comprehensive multi-paragraph analysis
+
+## 🏗️ Technical Architecture
 
 ### Backend Services
 
-1. **DocumentParser** (PDF/DOCX/TXT)
-    - Extracts text from various file formats
-    - Preserves metadata (page numbers, sections)
+- **DocumentProcessorService**: Handles file parsing and chunking
+- **VectorSearchService**: Manages embeddings and similarity search
+- **DocumentQuestionService**: Orchestrates RAG pipeline for Q&A
+- **FlashcardService**: Generates and manages flashcard data
+- **QuizService**: Creates assessments with multiple question types
+- **SummaryService**: Produces summaries at different detail levels
 
-2. **DocumentProcessorService**
-    - Sentence-aware text chunking
-    - Configurable chunk size and overlap
-    - Stores chunks in database
+### AI Agents
 
-3. **EmbeddingService**
-    - Generates embeddings via Mistral AI
-    - Caches embeddings for efficiency
-    - Cosine similarity calculation
-
-4. **VectorSearchService**
-    - Searches document chunks by semantic similarity
-    - Returns top-K most relevant chunks
-    - Supports single-document and multi-document search
-
-5. **DocumentQuestionService**
-    - Orchestrates RAG pipeline
-    - Builds context from retrieved chunks
-    - Generates answers with Mistral AI
-    - Tracks confidence and citations
+- **DocumentQuestionAgent**: Specialized for conversational Q&A
+- **FlashcardAgent**: Optimized for active recall and memorization
+- **QuizAgent**: Expert at educational assessment generation
+- **SummaryAgent**: Condenses content at multiple granularity levels
 
 ### Database Schema
 
-**documents**: Stores uploaded files and processing status
+- **documents**: File metadata and processing status
+- **document_chunks**: Text segments with embeddings
+- **document_questions**: Q&A conversation history
+- **flashcards**: Generated flashcard pairs with difficulty ratings
+- **quizzes**: Quiz questions and answer data
+- **summaries**: Cached summaries by mode (TL;DR, Brief, Detailed)
 
-- `id`, `user_id`, `filename`, `original_name`, `file_path`, `file_type`, `file_size`
-- `total_chunks`, `status`, `error_message`, `timestamps`
+### Frontend Stack
 
-**document_chunks**: Stores text chunks with embeddings
+- **Laravel Blade**: Server-side templating
+- **Tailwind CSS**: Utility-first styling with custom gradients
+- **Alpine.js**: Reactive JavaScript behavior
+- **Modern UX**: Loading overlays, smooth animations, responsive design
 
-- `id`, `document_id`, `chunk_text`, `chunk_index`
-- `start_char`, `end_char`, `embedding`, `metadata`, `timestamps`
+## 🎯 API Endpoints
 
-**document_questions**: Stores Q&A history
+### Document Management
 
-- `id`, `document_id`, `user_id`, `conversation_id`
-- `question`, `answer`, `citations`, `retrieved_chunks`
-- `confidence`, `tokens_used`, `timestamps`
+- `GET /documents` - List all documents with upload interface
+- `POST /documents` - Upload and process new document
+- `GET /documents/{id}` - View document details and study materials
+- `DELETE /documents/{id}` - Delete document and all associated data
+- `GET /documents/{id}/chat` - Interactive Q&A chat interface
 
-### Frontend Components
+### Q&A System
 
-- **documents/index.blade.php**: Document list and upload interface
-- **documents/chat.blade.php**: Interactive Q&A chat with Alpine.js
-- **layouts/app.blade.php**: Main layout with Tailwind styling
+- `POST /documents/{id}/ask` - Ask questions about specific document
+- `GET /documents/{id}/history` - Retrieve conversation history
+
+### Study Materials
+
+#### Flashcards
+
+- `GET /documents/{id}/flashcards` - View/generate flashcard interface
+- `POST /documents/{id}/flashcards/generate` - Create new flashcards
+- `GET /documents/{id}/flashcards/export/anki` - Export as Anki CSV
+- `GET /documents/{id}/flashcards/export/json` - Export as JSON
+
+#### Quiz
+
+- `GET /documents/{id}/quiz` - View/generate quiz interface (param: `difficulty`)
+- `POST /documents/{id}/quiz/generate` - Create new quiz
+
+#### Summary
+
+- `GET /documents/{id}/summary` - View/generate summary (param: `mode`)
+- `POST /documents/{id}/summary/generate` - Create new summary
 
 ## 🔧 Configuration
 
-### Chunking Strategy
-
-Edit `config/ai.php` or `.env`:
+### AI Settings (`config/ai.php`)
 
 ```php
+// Model Configuration
+'default_model' => 'mistral-large-latest',
+'embedding_model' => 'mistral-embed',
+
+// Document Processing
 'chunk_size' => 800,        // Characters per chunk
-'chunk_overlap' => 150,     // Overlap to prevent info loss
-'top_k_chunks' => 5,        // Number of chunks to retrieve
+'chunk_overlap' => 150,     // Overlap between chunks
+'top_k_chunks' => 5,        // Chunks retrieved for context
+
+// API Timeouts
+'api_timeout' => 180,       // 3 minutes for AI requests
+'connection_timeout' => 30, // Connection timeout
 ```
 
-### Models
+### File Upload Limits
 
-```php
-'default_model' => 'mistral-large-latest',   // For answer generation
-'embedding_model' => 'mistral-embed',         // For embeddings
+Modify in `.env`:
+
+```env
+MAX_UPLOAD_SIZE=10240  # 10MB in kilobytes
 ```
 
-### Caching
+Or in `php.ini`:
 
-Enable embedding caching to reduce API costs:
-
-```php
-'caching' => [
-    'embeddings' => [
-        'cache' => true,
-        'store' => 'database',
-    ],
-],
+```ini
+upload_max_filesize = 10M
+post_max_size = 10M
 ```
 
-## 🧪 Testing
+## 💰 Cost Optimization
 
-Run the test suite:
+### Smart Caching Strategy
 
-```bash
-php artisan test
-```
+- **All study materials cached** - generate once, use forever
+- **Embeddings cached** - no re-processing of same content
+- **Conversation context** - efficient multi-turn discussions
 
-Or with Pest:
+### Estimated Costs (Mistral AI Pricing)
 
-```bash
-./vendor/bin/pest
-```
+- **Document Processing**: $0.01-0.05 per document (one-time)
+- **Q&A**: $0.001-0.005 per question
+- **Flashcards**: $0.03-0.07 per generation (cached)
+- **Quiz**: $0.04-0.08 per generation (cached)
+- **Summary**: $0.01-0.03 per mode (cached)
 
-## 📊 Cost Optimization
+💡 **Pro Tip**: Study materials are permanently cached. Only regenerate if you want different content!
 
-- **Embeddings are cached** to avoid regenerating for the same text
-- **Batch processing** minimizes API calls
-- **Use mistral-small** for embeddings (cheaper than mistral-large)
-- **Implement user quotas** to control costs (e.g., 100 questions/day)
+## 🔒 Security Features
 
-## 🔒 Security
-
-- File type validation (PDF, DOCX, TXT only)
-- File size limits (10MB default)
-- CSRF protection (built into Laravel)
-- Input sanitization before sending to AI
-- Isolated user documents (no cross-user access)
+- **File Type Validation**: Only PDF, DOCX, TXT allowed
+- **Size Limits**: Configurable upload size restrictions
+- **Input Sanitization**: All user input cleaned before AI processing
+- **CSRF Protection**: Built-in Laravel security
+- **Storage Security**: Files stored outside web root
 
 ## 🐛 Troubleshooting
 
-### "PDF parser not installed"
+### Common Setup Issues
+
+**"PDF parser not installed"**
 
 ```bash
 composer require smalot/pdfparser
 ```
 
-### "DOCX parser not installed"
+**"DOCX parser not installed"**
 
 ```bash
 composer require phpoffice/phpword
 ```
 
-### "Failed to generate embedding"
+**"Failed to generate embedding"**
 
-Check your `MISTRAL_API_KEY` in `.env` and ensure you have API credits.
+- Check `MISTRAL_API_KEY` in `.env`
+- Verify API credits in Mistral console
+- Check internet connectivity
 
-### Documents stuck in "Processing"
+**"Maximum execution time exceeded"**
 
-Check `storage/logs/laravel.log` for errors. Common issues:
+- Large documents may take 3-5 minutes to process
+- Check PHP `max_execution_time` setting
+- The app automatically increases timeout limits
 
-- Invalid PDF format
-- Corrupted file
-- API rate limits
+**Documents stuck in "Processing"**
 
-### Migrations failed
+- Check `storage/logs/laravel.log` for errors
+- Common causes: corrupted files, API rate limits
+- Try re-uploading the document
 
-```bash
-php artisan migrate:fresh
-```
+**Study materials not generating**
 
-## 📈 Future Enhancements
+- Ensure document is fully processed first
+- Check Laravel logs for AI API errors
+- Verify Mistral API key has sufficient credits
 
-- [ ] Queue-based document processing (for larger files)
-- [ ] Multi-document querying (search across all user documents)
-- [ ] Export conversations as PDF
-- [ ] Document preview/viewer
-- [ ] Advanced filters (by date, file type)
-- [ ] User authentication and quotas
-- [ ] Admin dashboard for monitoring
+### Performance Tips
 
-## 📝 API Endpoints
+- Use **SSD storage** for faster file processing
+- **Increase PHP memory limit** for large documents
+- **Enable Redis/Memcached** for better caching
+- **Use queue workers** for background processing (advanced)
 
-### Web Routes
+## 🚀 Deployment
 
-- `GET /documents` - List documents
-- `POST /documents` - Upload document
-- `GET /documents/{id}/chat` - Chat interface
-- `DELETE /documents/{id}` - Delete document
+### Production Checklist
 
-### AJAX Endpoints
+- [ ] Set `APP_ENV=production` in `.env`
+- [ ] Set `APP_DEBUG=false`
+- [ ] Configure proper database credentials
+- [ ] Set up SSL certificate
+- [ ] Configure file permissions (755/644)
+- [ ] Set up proper backup strategy
+- [ ] Monitor API usage and costs
 
-- `POST /documents/{id}/ask` - Ask question about specific document
-- `POST /documents/ask-all` - Ask across all user documents
+### Server Requirements
+
+- **PHP 8.1+** with required extensions
+- **MySQL 8.0+** or **PostgreSQL 13+**
+- **Nginx** or **Apache** web server
+- **SSL certificate** (recommended)
+- **Minimum 2GB RAM** (4GB recommended for larger documents)
 
 ## 🤝 Contributing
 
-This project was built as a homework helper for educational purposes. Feel free to extend it!
+This project was built as an educational tool. Contributions welcome!
+
+### Development Setup
+
+```bash
+# Clone and setup as above, then:
+
+# Install development dependencies
+composer install --dev
+npm install
+
+# Run tests
+php artisan test
+
+# Watch for changes
+npm run dev
+```
 
 ## 📄 License
 
-MIT License
+MIT License - feel free to modify and extend for educational purposes!
 
 ## 🙏 Acknowledgments
 
 - **Mistral AI** for powerful language models
 - **Laravel AI** package for seamless integration
-- **Tailwind CSS** for beautiful styling
-- **Alpine.js** for reactive UI
+- **Tailwind CSS** for beautiful modern styling
+- **Alpine.js** for reactive user interfaces
+
+---
+
+**Ready to supercharge your studying? Upload your first document and let AI help you learn!** 🚀📚

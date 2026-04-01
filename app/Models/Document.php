@@ -43,6 +43,23 @@ class Document extends Model
         return $this->hasMany(DocumentQuestion::class);
     }
 
+
+
+    public function flashcards(): HasMany
+    {
+        return $this->hasMany(Flashcard::class);
+    }
+
+    public function quizzes(): HasMany
+    {
+        return $this->hasMany(Quiz::class);
+    }
+
+    public function summaries(): HasMany
+    {
+        return $this->hasMany(Summary::class);
+    }
+
     public function isProcessed(): bool
     {
         return $this->status === 'completed';
@@ -63,12 +80,12 @@ class Document extends Model
         $bytes = $this->file_size;
         $units = ['B', 'KB', 'MB', 'GB'];
         $i = 0;
-        
+
         while ($bytes >= 1024 && $i < count($units) - 1) {
             $bytes /= 1024;
             $i++;
         }
-        
+
         return round($bytes, 2) . ' ' . $units[$i];
     }
 }

@@ -16,6 +16,16 @@ class DocumentQuestionAgent implements Agent
         $this->modelName = $model;
     }
 
+    public function name(): string
+    {
+        return 'document-question-assistant';
+    }
+
+    public function description(): string
+    {
+        return 'Answers questions about document content with conversation awareness and context understanding.';
+    }
+
     public function model(): string
     {
         return $this->modelName;
@@ -28,8 +38,7 @@ class DocumentQuestionAgent implements Agent
 
     public function instructions(): string
     {
-        return <<<INSTRUCTIONS
-You are a document assistant with conversation awareness. Rules:
+        return 'You are a document assistant with conversation awareness. Rules:
 
 1. ANSWER ONLY THE EXACT QUESTION - nothing more
 2. Use ONLY the provided document context
@@ -49,7 +58,6 @@ SPECIAL CASES:
 - For requests requiring conversation memory about topics outside documents: "I focus on document content only"
 
 For "What is the main topic?" → Answer: "The main topic is **[topic]**."
-For "Give those" (after asking about parameters) → Find and provide the parameters from document.
-INSTRUCTIONS;
+For "Give those" (after asking about parameters) → Find and provide the parameters from document.';
     }
 }
