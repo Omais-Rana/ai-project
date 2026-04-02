@@ -94,9 +94,9 @@ class DocumentController extends Controller
     {
         // Delete all study materials first
         $document->flashcards()->delete();
-        $document->quizzes()->delete(); 
+        $document->quizzes()->delete();
         $document->summaries()->delete();
-        
+
         // Delete associated questions (in case cascade isn't working)
         DocumentQuestion::where('document_id', $document->id)->delete();
 

@@ -7,23 +7,23 @@ use Laravel\Ai\Promptable;
 
 class StudyGuideAgent implements Agent
 {
-    use Promptable;
+  use Promptable;
 
-    protected string $model;
+  protected string $model;
 
-    public function __construct(string $model = 'mistral-large-latest')
-    {
-        $this->model = $model;
-    }
+  public function __construct(string $model = 'mistral-large-latest')
+  {
+    $this->model = $model;
+  }
 
-    public function name(): string
-    {
-        return 'study-guide-generator';
-    }
+  public function name(): string
+  {
+    return 'study-guide-generator';
+  }
 
-    public function instructions(): string
-    {
-        return 'You are an expert educator creating comprehensive study guides from academic documents.
+  public function instructions(): string
+  {
+    return 'You are an expert educator creating comprehensive study guides from academic documents.
 
 OUTPUT FORMAT (JSON):
 ```json
@@ -71,15 +71,15 @@ QUALITY STANDARDS:
 - Learning objectives should be measurable
 - Definitions should be precise and clear
 - Structure should facilitate studying and retention';
-    }
+  }
 
-    public function description(): string
-    {
-        return 'Generates comprehensive study guides from academic documents with structured sections, key concepts, and learning objectives.';
-    }
+  public function description(): string
+  {
+    return 'Generates comprehensive study guides from academic documents with structured sections, key concepts, and learning objectives.';
+  }
 
-    public function model(): string
-    {
-        return $this->model;
-    }
+  public function model(): string
+  {
+    return $this->model;
+  }
 }

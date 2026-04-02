@@ -7,23 +7,23 @@ use Laravel\Ai\Promptable;
 
 class QuizAgent implements Agent
 {
-    use Promptable;
+  use Promptable;
 
-    protected string $model;
+  protected string $model;
 
-    public function __construct(string $model = 'mistral-large-latest')
-    {
-        $this->model = $model;
-    }
+  public function __construct(string $model = 'mistral-large-latest')
+  {
+    $this->model = $model;
+  }
 
-    public function name(): string
-    {
-        return 'quiz-generator';
-    }
+  public function name(): string
+  {
+    return 'quiz-generator';
+  }
 
-    public function instructions(): string
-    {
-        return 'You are an expert at creating comprehensive quizzes for testing knowledge.
+  public function instructions(): string
+  {
+    return 'You are an expert at creating comprehensive quizzes for testing knowledge.
 
 OUTPUT FORMAT (JSON):
 ```json
@@ -85,15 +85,15 @@ SHORT ANSWER TIPS:
 - Require 1-2 sentence answers
 - Test application or synthesis
 - Accept various phrasings of correct answer';
-    }
+  }
 
-    public function description(): string
-    {
-        return 'Generates comprehensive quizzes with multiple choice, true/false, and short answer questions.';
-    }
+  public function description(): string
+  {
+    return 'Generates comprehensive quizzes with multiple choice, true/false, and short answer questions.';
+  }
 
-    public function model(): string
-    {
-        return $this->model;
-    }
+  public function model(): string
+  {
+    return $this->model;
+  }
 }

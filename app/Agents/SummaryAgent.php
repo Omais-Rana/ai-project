@@ -25,7 +25,7 @@ class SummaryAgent implements Agent
 
     public function instructions(): string
     {
-        $lengthGuidelines = match($this->lengthMode) {
+        $lengthGuidelines = match ($this->lengthMode) {
             'tldr' => '2-3 sentences maximum. Ultra-concise key takeaway.',
             'brief' => '1-2 paragraphs (100-200 words). Main topics and key points only.',
             'detailed' => '3-5 paragraphs (300-500 words). Comprehensive overview with context and details.',
