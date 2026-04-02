@@ -49,6 +49,20 @@ Built with the **TALL stack**.
 - **Responsive Layout**: Works perfectly on desktop and mobile
 - **Smooth Animations**: Professional transitions and hover effects
 
+## 🖼️ Screenshots
+
+![Homepage](public/screenshots/home.png)
+
+![Document](public/screenshots/doc.png)
+
+![Chat](public/screenshots/chat.png)
+
+![Quiz](public/screenshots/quiz.png)
+
+![Flashcard](public/screenshots/card.png)
+
+![Summary](public/screenshots/summary.png)
+
 ## 🚀 Installation & Setup
 
 ### Prerequisites
